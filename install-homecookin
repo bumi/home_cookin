@@ -3,7 +3,8 @@
 require 'fileutils'
 require 'open-uri'
 
-FileUtils.mkdir_p "/usr/local/bin"
+
+system "usr/bin/sudo mkdir -p /usr/local/bin"
 
 File.open("/usr/local/bin/cook", 'w') do |f|
   open("https://github.com/gvarela/home_cookin/raw/master/cook") { |r| f.write(r.read) }
