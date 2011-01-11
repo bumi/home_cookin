@@ -3,14 +3,15 @@
 require 'fileutils'
 require 'open-uri'
 
+# ToDo: I guess I will create a small gem out of that.
 
-system "/usr/bin/sudo mkdir -p /usr/local/bin"
+system "mkdir -p /tmp/home_cookin"
 
-File.open("/usr/local/bin/cook", 'w+') do |f|
+File.open("/tmp/home_cookin/cook", 'w+') do |f|
   open("https://github.com/gvarela/home_cookin/raw/master/cook") { |r| f.write(r.read) }
 end
 
-FileUtils.chmod 0755, "/usr/local/bin/cook"
+FileUtils.chmod 0755, "/tmp/home_cookin/cook"
 
 File.open("#{ENV['HOME']}/.cook", 'w+') do |f|
   open("https://github.com/gvarela/home_cookin/raw/master/default.json") { |r| f.write(r.read) }
@@ -18,7 +19,7 @@ end
 
 usage = <<-END
 To update from your cookbooks run
- sudo cook node.json
+ sudo /tmp/home_cookin/cook node.json
 END
 
 puts usage
