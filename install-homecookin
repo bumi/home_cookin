@@ -5,13 +5,41 @@ require 'open-uri'
 
 # ToDo: I guess I will create a small gem out of that.
 
-system "mkdir -p /tmp/home_cookin"
+# USING HOMEBREW SETUP SCRIPT TO SETUP /usr/local
 
-File.open("/tmp/home_cookin/cook", 'w+') do |f|
+def sudo *args
+  args = if args.length > 1
+    args.unshift "/usr/bin/sudo"
+  else
+    "/usr/bin/sudo #{args}"
+  end
+  system *args
+end
+
+chmods = %w( . bin etc include lib lib/pkgconfig Library sbin share var share/locale share/man
+             share/man/man1 share/man/man2 share/man/man3 share/man/man4
+             share/man/man5 share/man/man6 share/man/man7 share/man/man8
+             share/info share/doc share/aclocal ).
+            map{ |d| "/usr/local/#{d}" }.
+            select{ |d| File.directory? d and not File.writable? d }
+chgrps = chmods.reject{ |d| File.stat(d).grpowned? }
+
+if File.directory? "/usr/local"
+  sudo "/bin/chmod", "g+w", *chmods unless chmods.empty?
+  # all admin users are in staff
+  sudo "/usr/bin/chgrp", "staff", *chgrps unless chgrps.empty?
+else
+  sudo "/bin/mkdir /usr/local"
+  sudo "/bin/chmod g+w /usr/local"
+  # the group is set to wheel by default for some reason
+  sudo "/usr/bin/chgrp staff /usr/local"
+end
+
+File.open("/usr/local/bin/cook", 'w+') do |f|
   open("https://github.com/gvarela/home_cookin/raw/master/cook") { |r| f.write(r.read) }
 end
 
-FileUtils.chmod 0755, "/tmp/home_cookin/cook"
+FileUtils.chmod 0755, "/usr/local/bin/cook"
 
 File.open("#{ENV['HOME']}/.cook", 'w+') do |f|
   open("https://github.com/gvarela/home_cookin/raw/master/default.json") { |r| f.write(r.read) }
@@ -19,7 +47,7 @@ end
 
 usage = <<-END
 To update from your cookbooks run
- sudo /tmp/home_cookin/cook node.json
+ sudo /usr/local/bin/cook node.json
 END
 
 puts usage
