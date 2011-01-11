@@ -35,6 +35,8 @@ else
   sudo "/usr/bin/chgrp staff /usr/local"
 end
 
+system "mkdir /usr/local/bin"
+
 File.open("/usr/local/bin/cook", 'w+') do |f|
   open("https://github.com/gvarela/home_cookin/raw/master/cook") { |r| f.write(r.read) }
 end
