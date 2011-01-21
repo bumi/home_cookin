@@ -1,6 +1,6 @@
 Install
 =======
-        ruby < <( curl https://github.com/gvarela/home_cookin/raw/master/install-homecookin )
+        ruby < <( curl https://github.com/bumi/home_cookin/raw/master/install-homecookin )
 
 Usage
 =====
